@@ -1,0 +1,12 @@
+# setting dir
+.vscode
+
+# modules dir
+vendor
+node_modules
+
+# test file
+*.test
+
+# database
+*.db

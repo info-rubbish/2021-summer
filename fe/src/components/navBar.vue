@@ -2,25 +2,30 @@
     <div class="sticky top-0" id="app1">
         <div class="lg:hidden">
             <!--lg+ hide-->
-            <div class="fixed" v-on:click="switchsidebar()">
-                <button>Open</button>
-            </div>
+            <div class="fixed" v-on:click="switchsidebar()">Open</div>
         </div>
         <div class="hidden lg:block">
             <!--lg- hide-->
-            <ul>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
+            <ul class="list">
+                <li>Home</li>
+                <li>Home</li>
+                <li>Home</li>
             </ul>
         </div>
         <div class="fixed">
             <!--sidebar for lg- -->
             <div
-                class="transition duration-700 ease-linear w-0"
+                class="hidden overflow-hidden bg-white w-screen"
                 data-close="1"
                 id="sidebarT"
-            ></div>
+            >
+                <div v-on:click="switchsidebar()">Close</div>
+                <ul>
+                    <li>Home</li>
+                    <li>Home</li>
+                    <li>Home</li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -32,8 +37,9 @@ export default {
         switchsidebar() {
             var ele = document.querySelector('#sidebarT')
             var isClose = !!+ele.getAttribute('data-close')
-            if (isClose) ele.classList.replace('w-0', 'w-full')
-            else ele.classList.replace('w-full', 'w-0')
+            if (isClose) ele.classList.replace('hidden', 'block')
+            else ele.classList.replace('block', 'hidden')
+            ele.setAttribute('data-close', isClose ? '0' : '1')
         },
     },
 }
@@ -41,4 +47,7 @@ export default {
 // w-full
 </script>
 <style>
+ul.list > li {
+    display: inline-block;
+}
 </style>

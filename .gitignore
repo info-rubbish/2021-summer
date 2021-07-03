@@ -5,8 +5,15 @@
 vendor
 node_modules
 
-# test file
+# test
 *.test
+test
 
 # database
 *.db
+db
+
+# bin
+bin
+dist
+*.exe

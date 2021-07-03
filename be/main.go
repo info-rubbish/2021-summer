@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"main/src/api"
 	"main/src/database"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +15,10 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func main() {
 	println("starting")

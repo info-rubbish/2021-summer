@@ -15,8 +15,8 @@
         <div class="fixed">
             <!--sidebar for lg- -->
             <div
-                class="hidden overflow-hidden bg-white w-screen"
-                data-close="1"
+                class="overflow-hidden bg-white w-screen"
+                v-bind:class="navClass"
                 id="sidebarT"
             >
                 <div v-on:click="switchsidebar()">Close</div>
@@ -35,12 +35,12 @@ export default {
     name: 'navBar',
     methods: {
         switchsidebar() {
-            var ele = document.querySelector('#sidebarT')
-            var isClose = !!+ele.getAttribute('data-close')
-            if (isClose) ele.classList.replace('hidden', 'block')
-            else ele.classList.replace('block', 'hidden')
-            ele.setAttribute('data-close', isClose ? '0' : '1')
+            if (this.$data.navClass == 'block') this.$data.navClass = 'hidden'
+            else this.$data.navClass = 'block'
         },
+    },
+    data() {
+        return { navClass: 'hidden' }
     },
 }
 // function app1

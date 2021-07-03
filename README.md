@@ -17,6 +17,7 @@
 - [自動排版](https://marketplace.visualstudio.com/items?itemname=esbenp.prettier-vscode)
 - [Git 優化](https://marketplace.visualstudio.com/items?itemname=eamodio.gitlens)
 - [括號顏色優化](https://marketplace.visualstudio.com/items?itemname=coenraads.bracket-pair-colorizer-2)
+- [Github 支援](https://marketplace.visualstudio.com/items?itemname=github.vscode-pull-request-github)
 
 ## 前端
 
@@ -30,3 +31,13 @@
 <!-- - [](https://marketplace.visualstudio.com/items?itemname=) -->
 <!-- - [](https://marketplace.visualstudio.com/items?itemname=) -->
 <!-- - [](https://marketplace.visualstudio.com/items?itemname=) -->
+
+# 編譯
+
+## 後端
+
+```bash
+
+# start API server
+be_start.bat
+```

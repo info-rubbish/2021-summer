@@ -1,4 +1,4 @@
-package token
+package tokens
 
 import (
 	"testing"
@@ -31,4 +31,12 @@ func TestToken(t *testing.T) {
 	if _, err := store.GetToken(gctoken); err == nil {
 		t.Fatal("should gc")
 	}
+}
+
+func TestRandomID(t *testing.T) {
+	s := RandomID(10)
+	if len(s) != 10 {
+		t.Fatal("len should be 10")
+	}
+	t.Log(s)
 }

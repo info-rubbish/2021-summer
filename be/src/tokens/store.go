@@ -1,4 +1,4 @@
-package token
+package tokens
 
 import (
 	"errors"
@@ -43,8 +43,9 @@ func (s *Store) Close() {
 }
 
 // data must be a pointer
+// go gc lagggggg
 func (s *Store) NewToken(data interface{}) (string, error) {
-	tokenString, err := generateToken(s.n)
+	tokenString, err := GenerateToken(s.n)
 	if err != nil {
 		return "", err
 	}
@@ -63,28 +64,32 @@ func (s *Store) DestroyToken(tokenKey interface{}) error {
 	return nil
 }
 
+// return data
 func (s *Store) GetToken(tokenKey interface{}) (interface{}, error) {
 	value, ok := s.store.Load(tokenKey)
 	if !ok {
 		return nil, ErrNotFind
 	}
-	if value.(*token).expired.Before(time.Now().Add(s.ttl)) {
+	if value.(*token).expired.Before(time.Now()) {
 		s.DestroyToken(tokenKey)
 		return nil, ErrExpired
 	}
 	return value.(*token).data, nil
 }
 
+// return new token
 func (s *Store) ReNewToken(tokenKey interface{}) (string, error) {
 	value, ok := s.store.LoadAndDelete(tokenKey)
 	if !ok {
 		return "", ErrNotFind
 	}
+	if value.(*token).expired.Before(time.Now()) {
+		return "", ErrExpired
+	}
 	newTokenString, err := s.NewToken(value.(*token).data)
 	if err != nil {
 		return "", err
 	}
-	s.DestroyToken(tokenKey)
 	return newTokenString, nil
 }
 

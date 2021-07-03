@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import router from './router'
 import App from './App.vue'
+import 'axios'
 import './all.css'
 var app=createApp(App);
 app.component(App.name,App);

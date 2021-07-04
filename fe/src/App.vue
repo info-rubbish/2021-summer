@@ -1,7 +1,6 @@
 <template>
     <div>
         <navBar />
-        <img alt="Vue logo" src="./assets/logo.png" />
         <router-view to="home"/>   
     </div>
 </template>

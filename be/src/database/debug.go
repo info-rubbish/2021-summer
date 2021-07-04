@@ -29,9 +29,11 @@ func (s *Debug) workers() {
 			println("SQL >")
 			s := bufio.NewScanner(os.Stdin)
 			if s.Scan() {
-				if err := DB.Exec(s.Text()).Error; err != nil {
-					println(err.Error())
-					continue
+				if text := s.Text(); text != "" {
+					if err := DB.Exec(text).Error; err != nil {
+						println(err.Error())
+						continue
+					}
 				}
 			}
 		}

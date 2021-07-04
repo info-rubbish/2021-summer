@@ -5,14 +5,16 @@ import (
 	"main/src/config"
 	"main/src/tokens"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID       string `gorm:"primaryKey"`
-	Name     string `gorm:"primaryKey"`
+	Created  time.Time `gorm:"autoCreateTime"`
+	ID       string    `gorm:"primaryKey"`
+	Name     string    `gorm:"primaryKey"`
 	Password []byte
 }
 

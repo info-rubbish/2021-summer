@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"log"
 	"main/src/tokens"
 
@@ -23,14 +24,15 @@ func init() {
 	if err := db.AutoMigrate(&User{}); err != nil {
 		panic(err)
 	}
-	if err := db.First(nil, "name=?", "paula").Error; err != nil && err == gorm.ErrRecordNotFound {
-		user := &User{
-			Name:     "paula",
-			Password: tokens.Hash([]byte("20040623")),
-		}
-		if err := db.Create(&user).Error; err != nil {
+	user := &User{
+		Name:     "paula",
+		Password: tokens.Hash([]byte("20040623")),
+	}
+	if err := db.First(user, "name=?", "paula").Error; err != nil {
+		if err := db.Create(user).Error; err != nil {
 			panic(err)
 		}
 	}
+	fmt.Printf("Test Account\n\tName: %s\n", user.Name)
 	DB = db
 }

@@ -1,9 +1,11 @@
 package api
 
 import (
+	"main/src/config"
 	"main/src/database"
 	"main/src/tokens"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,14 +36,28 @@ func PostToken(s *gin.Context) {
 		return
 	}
 	s.JSON(http.StatusOK, &Resp{
-		Error:   false,
 		Message: "login success",
-		Data:    &ModelToken{Token: token},
+		Data: map[string]interface{}{
+			"token": &ModelToken{
+				Token:   token,
+				Created: time.Now(),
+				TTL:     config.TokenTTL,
+			},
+			"user": &ModelUser{
+				Created: user.Created,
+				ID:      user.ID,
+				Name:    user.Name,
+			},
+		},
 	})
 }
 
+type DeleteTokenReq struct {
+	Token string `json:"token"`
+}
+
 func DeleteToken(s *gin.Context) {
-	req := &Req{}
+	req := &DeleteTokenReq{}
 	s.BindJSON(req)
 	if _, err := tokens.TokenStore.GetToken(req.Token); err != nil {
 		Err2Restful(s, err)
@@ -52,14 +68,18 @@ func DeleteToken(s *gin.Context) {
 		return
 	}
 	s.JSON(http.StatusOK, &Resp{
-		Error:   false,
 		Message: "logout success",
 		Data:    nil,
 	})
 
 }
+
+type PutTokenReq struct {
+	Token string `json:"token"`
+}
+
 func PutToken(s *gin.Context) {
-	req := &Req{}
+	req := &PutTokenReq{}
 	s.BindJSON(req)
 	token, err := tokens.TokenStore.ReNewToken(req.Token)
 	if err != nil {
@@ -69,6 +89,12 @@ func PutToken(s *gin.Context) {
 	s.JSON(http.StatusOK, &Resp{
 		Error:   false,
 		Message: "renew success",
-		Data:    &ModelToken{Token: token},
+		Data: map[string]interface{}{
+			"token": &ModelToken{
+				Token:   token,
+				Created: time.Now(),
+				TTL:     config.TokenTTL,
+			},
+		},
 	})
 }

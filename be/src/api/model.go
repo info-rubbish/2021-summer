@@ -3,14 +3,15 @@ package api
 import (
 	"main/src/config"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Resp struct {
-	Error   bool        `json:"error"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Error   bool                   `json:"error"`
+	Message string                 `json:"message"`
+	Data    map[string]interface{} `json:"data,omitempty"`
 }
 
 type Req struct {
@@ -19,12 +20,20 @@ type Req struct {
 }
 
 type ModelToken struct {
-	Token string `json:"token"`
+	Token   string        `json:"token"`
+	Created time.Time     `json:"created"`
+	TTL     time.Duration `json:"ttl"`
 }
 
-type TokenData struct {
-	Name string `json:"name"`
+type ModelUser struct {
+	Created time.Time `json:"created"`
+	ID      string    `json:"id"`
+	Name    string    `json:"name"`
 }
+
+// type TokenData struct {
+// 	Name string `json:"name"`
+// }
 
 func Err2Restful(s *gin.Context, e error) {
 	if err, ok := e.(*config.HttpErr); ok {

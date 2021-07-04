@@ -1,13 +1,11 @@
 <template>
     <div>
         <h2>Login</h2>
-        <form>
-            <div class="grid grid-rows-2 grid-flow-col grid-cols-2 gap-2">
-                <label class="border-solid border-2">Account</label
-                ><input type="text" class="border-solid border-2" /><label
-                    class="border-solid border-2"
-                    >Password</label
-                ><input type="password" class="border-solid border-2" />
+        <form v-on:submit="login()" onsubmit="return false;">
+            <div class="grid grid-rows-3 grid-flow-row grid-cols-2 gap-2 bor">
+                <label>Account</label><input type="text" />
+                <label>Password</label><input type="password" />
+                <label>Submit</label><input type="submit" />
             </div>
         </form>
     </div>
@@ -17,7 +15,11 @@
 export default {
     name: 'Login',
     components: {},
-    methods: {}, //in order to avoid misspelling, I put blank here
+    methods: {
+        login() {
+            return false;
+        },
+    }, //in order to avoid misspelling, I put blank here
     computed: {},
 }
 </script>
@@ -25,5 +27,8 @@ export default {
 <style>
 form {
     padding: 10px;
+}
+.bor > label,.bor >input {
+    border: 1px solid black;
 }
 </style>

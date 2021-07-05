@@ -17,3 +17,6 @@ db
 bin
 dist
 *.exe
+
+# I want a place to take note
+/note.txt

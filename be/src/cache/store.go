@@ -11,6 +11,7 @@ type Store struct {
 	shades   []*shade
 	list     []*list.Element
 	lru      *list.List
+	queue    *list.List
 	p        uint64
 	lock     *sync.RWMutex
 }
@@ -34,6 +35,7 @@ func New(sm, lm uint64) *Store {
 		shades:   make([]*shade, sm),
 		list:     make([]*list.Element, sm*lm),
 		lru:      list.New(),
+		queue:    list.New(),
 		p:        0,
 		lock:     &sync.RWMutex{},
 	}
@@ -49,16 +51,16 @@ func New(sm, lm uint64) *Store {
 func (s *Store) Set(key string, value interface{}) {
 	keyHash := hash(key)
 	shadeHash := keyHash & (s.shadeMax - 1)
+	s.lock.Lock()
 	s.shades[shadeHash].lock.Lock()
 	if v, ok := s.shades[shadeHash].kv[keyHash]; ok {
-		s.lock.Lock()
+		// s.lock.Lock()
 		s.list[v].Value.(*element).value = value
 		s.lru.MoveToBack(s.list[v])
 		s.lock.Unlock()
 		s.shades[shadeHash].lock.Unlock()
 		return
 	}
-	s.lock.Lock()
 	if s.lru.Len() >= s.Max {
 		front := s.lru.Front()
 		s.lru.Remove(front)
@@ -67,9 +69,11 @@ func (s *Store) Set(key string, value interface{}) {
 		if shadeHash != frontShadeHash {
 			s.shades[frontShadeHash].lock.Lock()
 			s.list[s.shades[frontShadeHash].kv[frontHash]] = nil
+			delete(s.shades[frontShadeHash].kv, frontHash)
 			s.shades[frontShadeHash].lock.Unlock()
 		} else {
 			s.list[s.shades[frontShadeHash].kv[frontHash]] = nil
+			delete(s.shades[frontShadeHash].kv, frontHash)
 		}
 	}
 	l := s.findEmpty()
@@ -78,22 +82,24 @@ func (s *Store) Set(key string, value interface{}) {
 		value: value,
 		hash:  keyHash,
 	})
-	s.lock.Unlock()
 	s.shades[shadeHash].lock.Unlock()
+	s.lock.Unlock()
 }
 
 func (s *Store) Get(key string) (interface{}, bool) {
 	keyHash := hash(key)
 	shadeHash := keyHash & (s.shadeMax - 1)
+	s.lock.Lock()
 	s.shades[shadeHash].lock.RLock()
 	offset, ok := s.shades[shadeHash].kv[keyHash]
-	s.shades[shadeHash].lock.RUnlock()
 	if !ok {
+		s.shades[shadeHash].lock.RUnlock()
+		s.lock.Unlock()
 		return nil, false
 	}
-	s.lock.Lock()
 	s.lru.MoveToBack(s.list[offset])
 	r := s.list[offset].Value.(*element).value
+	s.shades[shadeHash].lock.RUnlock()
 	s.lock.Unlock()
 	return r, true
 }
@@ -101,29 +107,28 @@ func (s *Store) Get(key string) (interface{}, bool) {
 func (s *Store) Del(key string) bool {
 	keyHash := hash(key)
 	shadeHash := keyHash & (s.shadeMax - 1)
+	s.lock.Lock()
 	s.shades[shadeHash].lock.Lock()
 	v, ok := s.shades[shadeHash].kv[keyHash]
 	if !ok {
 		s.shades[shadeHash].lock.Unlock()
+		s.lock.Unlock()
 		return false
 	}
 	delete(s.shades[shadeHash].kv, keyHash)
-	s.lock.Lock()
-	del := s.list[v]
-	s.lru.Remove(del)
-	delHash := del.Value.(*element).hash
-	delShadeHash := delHash & (s.shadeMax - 1)
-	s.p = s.shades[delShadeHash].kv[delHash]
-	s.list[s.p] = nil
-	s.lock.Unlock()
+	s.lru.Remove(s.list[v])
+	s.list[v] = nil
+	// reuse empty
+	s.queue.PushBack(v)
 	s.shades[shadeHash].lock.Unlock()
+	s.lock.Unlock()
 	return true
 }
 
 func (s *Store) Len() int {
-	s.lock.Lock()
+	s.lock.RLock()
 	r := s.lru.Len()
-	s.lock.Unlock()
+	s.lock.RUnlock()
 	return r
 }
 
@@ -145,6 +150,11 @@ func hash(key string) uint64 {
 }
 
 func (s *Store) findEmpty() uint64 {
+	if s.queue.Len() > 0 {
+		f := s.queue.Front().Value.(uint64)
+		s.queue.Remove(s.queue.Front())
+		return f
+	}
 	for ; s.p < uint64(s.Max); s.p++ {
 		if s.list[s.p] == nil {
 			return s.p
@@ -152,6 +162,10 @@ func (s *Store) findEmpty() uint64 {
 	}
 	s.p = 0
 	return s.findEmpty()
+}
+
+func (s *shade) set(key string, value interface{}) {
+
 }
 
 // type Store struct {

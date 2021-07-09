@@ -2,6 +2,7 @@ package cache
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"testing"
 	"time"
@@ -15,6 +16,15 @@ func TestKeyValue(t *testing.T) {
 		t.Fatal("should exist")
 	}
 	t.Log(v)
+}
+
+func TestNil(t *testing.T) {
+	s := New(2, 5)
+	s.Set("1", 2)
+	s.Del("1")
+	s.Set("1", 2)
+	s.Del("2")
+	s.Set("1", 2)
 }
 
 func TestFill(t *testing.T) {
@@ -113,5 +123,17 @@ func BenchmarkDataRWD(b *testing.B) {
 		s.Set(strconv.Itoa(i), i+1)
 		s.Get(strconv.Itoa(i))
 		s.Del(strconv.Itoa(i))
+	}
+}
+
+func BenchmarkRandDataRWD(b *testing.B) {
+	s := New(2, 5)
+	for i := 1; i < b.N; i++ {
+		r := rand.Intn(i)
+		d := rand.Intn(i)
+		// println(r, ":", d)
+		s.Set(strconv.Itoa(r), 0)
+		s.Get(strconv.Itoa(rand.Intn(i)))
+		s.Del(strconv.Itoa(d))
 	}
 }

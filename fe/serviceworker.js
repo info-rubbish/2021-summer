@@ -2,25 +2,17 @@ const config = {
     port: '3000',
     last_edit: '1625837814592', // result form Date.now()
 }
+
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        //maybe promise chain is better
-        // clear cache
-        caches.delete('v1').then(() => {
-            caches.open('v1').then((cache) => {
-                // Add pre-cache path below
-                return cache.addAll([])
-            })
-        })
-    )
+    event.waitUntil(caches.delete('v1'))
 })
+
 self.addEventListener('activate', (event) => {
     console.log('serviceworker activated')
 })
 
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url)
-    // console.log(url.host)
     if (url.port != config.port)
         // if not under the port, send directly
         event.respondWith(Promise.resolve(fetch(event.request)))
@@ -28,23 +20,23 @@ self.addEventListener('fetch', (event) => {
         // if browser unsupport, send directly
         event.respondWith(Promise.resolve(fetch(event.request)))
     else {
-        //if under port cache request or send existed cache
         event.respondWith(
-            caches.match(event.request).then((response) => {
+            (async function () {
+                var response = await caches.match(event.request)
                 if (!response) {
-                    console.log(`from Internet( ${event.request.url} )`)
-                    caches.open('v1').then((cache) => {
-                        fetch(url).then(function (response) {
-                            if (!response.ok)
-                                throw new TypeError('Bad response status')
-                            return cache.put(url, response)
-                        })
-                    })
+                    // console.log(`from Internet( ${event.request.url} )`)
+                    var cache = await caches.open('v1')
+                    var fetch_response = fetch(event.request)
+                    var clone_response = (await fetch_response).clone()
+                    if (!clone_response.ok)
+                        throw new TypeError('Bad response status')
+                    await cache.put(url, clone_response)
+                    return fetch_response
                 } else {
-                    console.log(`from cache( ${event.request.url} )`)
+                    // console.log(`from Cache( ${event.request.url} )`)
                     return response
                 }
-            })
+            })()
         )
     }
 })

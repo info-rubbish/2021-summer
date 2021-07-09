@@ -140,3 +140,17 @@ func BenchmarkRandDataRWD(b *testing.B) {
 		s.Del(strconv.Itoa(d))
 	}
 }
+
+func TestLoad(t *testing.T) {
+	w := NewWrapper(New(2, 5))
+	var s string
+	for i := 0; i < 10; i++ {
+		b := time.Now()
+		w.Load(&s, "hi", func(s string) (interface{}, error) {
+			time.Sleep(time.Second)
+			k := "hi paula"
+			return &k, nil
+		})
+		t.Log(time.Since(b), s)
+	}
+}

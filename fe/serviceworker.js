@@ -4,10 +4,13 @@ const config = {
 }
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open('v1').then((cache) => {
-            // clear cache
-            // Add precache path below
-            return cache.addAll([])
+        //maybe promise chain is better
+        // clear cache
+        caches.delete('v1').then(() => {
+            caches.open('v1').then((cache) => {
+                // Add pre-cache path below
+                return cache.addAll([])
+            })
         })
     )
 })

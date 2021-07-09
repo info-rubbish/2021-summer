@@ -18,6 +18,11 @@ type User struct {
 	Password []byte
 }
 
+type UserConfig struct {
+	Name     string
+	Password string
+}
+
 func (s *User) BeforeCreate(tx *gorm.DB) error {
 	s.ID = tokens.RandomID(config.RandomIDLength)
 	return nil
@@ -33,6 +38,25 @@ func UserLogin(s *gin.Context, name string, password string) (*User, error) {
 		return nil, &config.HttpErr{
 			Code: http.StatusUnauthorized,
 		}
+	}
+	return &user, nil
+}
+
+func ChangeUserInfo(id string, c UserConfig) error {
+	if err := DB.Model(&User{}).Where("id=?", id).Updates(&User{
+		Name:     c.Name,
+		Password: tokens.Hash([]byte(c.Password)),
+	}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// cache fn
+func UserInfo(id string) (interface{}, error) {
+	var user User
+	if err := DB.First(&user, "id=?", id).Error; err != nil {
+		return nil, err
 	}
 	return &user, nil
 }

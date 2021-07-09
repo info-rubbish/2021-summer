@@ -20,7 +20,7 @@ func TestToken(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if data.(string) != "paula" {
+	if data != "paula" {
 		t.Fatal("not the same")
 	}
 	time.Sleep(time.Second * 6)

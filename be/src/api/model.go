@@ -1,11 +1,14 @@
 package api
 
 import (
+	"errors"
 	"main/src/config"
+	"main/src/tokens"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type Resp struct {
@@ -43,7 +46,17 @@ func Err2Restful(s *gin.Context, e error) {
 		})
 		return
 	}
-	s.JSON(http.StatusInternalServerError, &Resp{
+	var c int = http.StatusInternalServerError
+	switch errors.Unwrap(e) {
+	case tokens.ErrEmpty:
+		c = http.StatusBadRequest
+	case tokens.ErrNotFind:
+		c = http.StatusUnauthorized
+	case tokens.ErrNotFind:
+	case gorm.ErrRecordNotFound:
+		c = http.StatusNotFound
+	}
+	s.JSON(c, &Resp{
 		Error:   true,
 		Message: e.Error(),
 	})

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"main/src/cache"
 	"main/src/config"
 	"main/src/database"
 	"main/src/tokens"
@@ -30,7 +31,8 @@ func PostToken(s *gin.Context) {
 		Err2Restful(s, err)
 		return
 	}
-	token, err := tokens.TokenStore.NewToken(user)
+	cache.CacheStore.Set(user.ID, user)
+	token, err := tokens.TokenStore.NewToken(user.ID)
 	if err != nil {
 		Err2Restful(s, err)
 		return

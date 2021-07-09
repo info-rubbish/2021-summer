@@ -9,6 +9,7 @@ import (
 var (
 	ErrNotFind error = errors.New("key not find in store")
 	ErrExpired error = errors.New("key Expired")
+	ErrEmpty   error = errors.New("key Empty")
 )
 
 type Store struct {
@@ -20,7 +21,7 @@ type Store struct {
 
 type token struct {
 	expired time.Time
-	data    interface{}
+	id      string
 }
 
 // ttl token time to live
@@ -44,19 +45,22 @@ func (s *Store) Close() {
 
 // data must be a pointer
 // go gc lagggggg
-func (s *Store) NewToken(data interface{}) (string, error) {
+func (s *Store) NewToken(id string) (string, error) {
 	tokenString, err := GenerateToken(s.n)
 	if err != nil {
 		return "", err
 	}
 	s.store.Store(tokenString, &token{
 		expired: time.Now().Add(s.ttl),
-		data:    data,
+		id:      id,
 	})
 	return tokenString, nil
 }
 
 func (s *Store) DestroyToken(tokenKey interface{}) error {
+	if tokenKey == "" {
+		return ErrEmpty
+	}
 	_, ok := s.store.LoadAndDelete(tokenKey)
 	if !ok {
 		return ErrNotFind
@@ -65,20 +69,26 @@ func (s *Store) DestroyToken(tokenKey interface{}) error {
 }
 
 // return data
-func (s *Store) GetToken(tokenKey interface{}) (interface{}, error) {
+func (s *Store) GetToken(tokenKey interface{}) (string, error) {
+	if tokenKey == "" {
+		return "", ErrEmpty
+	}
 	value, ok := s.store.Load(tokenKey)
 	if !ok {
-		return nil, ErrNotFind
+		return "", ErrNotFind
 	}
 	if value.(*token).expired.Before(time.Now()) {
 		s.DestroyToken(tokenKey)
-		return nil, ErrExpired
+		return "", ErrExpired
 	}
-	return value.(*token).data, nil
+	return value.(*token).id, nil
 }
 
 // return new token
 func (s *Store) ReNewToken(tokenKey interface{}) (string, error) {
+	if tokenKey == "" {
+		return "", ErrEmpty
+	}
 	value, ok := s.store.LoadAndDelete(tokenKey)
 	if !ok {
 		return "", ErrNotFind
@@ -86,7 +96,7 @@ func (s *Store) ReNewToken(tokenKey interface{}) (string, error) {
 	if value.(*token).expired.Before(time.Now()) {
 		return "", ErrExpired
 	}
-	newTokenString, err := s.NewToken(value.(*token).data)
+	newTokenString, err := s.NewToken(value.(*token).id)
 	if err != nil {
 		return "", err
 	}

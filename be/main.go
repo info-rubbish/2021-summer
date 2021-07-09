@@ -38,9 +38,13 @@ func main() {
 	router.Use(cors.Default())
 
 	// some router
+	// token
 	router.POST("token", api.PostToken)
 	router.DELETE("token", api.DeleteToken)
 	router.PUT("token", api.PutToken)
+	// user
+	router.GET("user", api.GetUser)
+	router.PUT("user", api.PutUser)
 
 	server := &http.Server{
 		Addr:    ":3623",

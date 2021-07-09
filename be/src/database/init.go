@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-	"log"
 	"main/src/tokens"
 
 	"gorm.io/driver/sqlite"
@@ -13,11 +12,8 @@ import (
 var DB *gorm.DB
 
 func init() {
-	db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{
-		Logger: logger.New(log.Default(), logger.Config{
-			Colorful: true,
-		}),
-	})
+	db, err := gorm.Open(sqlite.Open("database.db"))
+	db.Logger.LogMode(logger.Info)
 	if err != nil {
 		panic(err)
 	}

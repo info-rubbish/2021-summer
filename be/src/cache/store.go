@@ -2,6 +2,7 @@ package cache
 
 import (
 	"container/list"
+	"reflect"
 	"sync"
 )
 
@@ -29,6 +30,14 @@ func New(sm, lm uint64) *Store {
 
 func (s *Store) Set(key string, value interface{}) {
 	h := hash(key)
+	rv := reflect.ValueOf(value)
+	if rv.Kind() != reflect.Ptr {
+		// 轉成pointer
+		ptrv := reflect.New(rv.Type())
+		ptrv.Elem().Set(rv)
+		s.shards[h&(s.shadeMask)].set(h, ptrv.Interface())
+		return
+	}
 	s.shards[h&(s.shadeMask)].set(h, value)
 }
 

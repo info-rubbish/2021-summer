@@ -34,11 +34,8 @@ func (s *Wrapper) Load(pointer interface{}, key string, db FromDB) error {
 	}
 	if v, ok := s.Get(key); ok {
 		rv := reflect.ValueOf(v)
-		if rv.Kind() != reflect.Ptr {
-			ptr.Elem().Set(rv)
-		} else {
-			ptr.Elem().Set(rv.Elem())
-		}
+		// 如果不是pointer會panic
+		ptr.Elem().Set(rv.Elem())
 		return nil
 	}
 	v, err := db(key)
@@ -48,9 +45,14 @@ func (s *Wrapper) Load(pointer interface{}, key string, db FromDB) error {
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Ptr {
 		ptr.Elem().Set(rv)
+
+		// 轉成pointer
+		ptrv := reflect.New(rv.Type())
+		ptrv.Elem().Set(rv)
+		s.Set(key, ptrv.Interface())
 	} else {
 		ptr.Elem().Set(rv.Elem())
+		s.Set(key, v)
 	}
-	s.Set(key, v)
 	return nil
 }

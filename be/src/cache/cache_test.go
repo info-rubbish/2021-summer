@@ -148,9 +148,10 @@ func TestLoad(t *testing.T) {
 		b := time.Now()
 		w.Load(&s, "hi", func(s string) (interface{}, error) {
 			time.Sleep(time.Second)
-			k := "hi paula"
-			return &k, nil
+			return s + " paula", nil
 		})
 		t.Log(time.Since(b), s)
 	}
+	g, _ := w.Get("hi")
+	t.Logf("type:%T", g)
 }

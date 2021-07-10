@@ -1,5 +1,6 @@
 const config = {
     port: '3000',
+    // when any byte of serviceworker.js file changed, changes will tigger onupdatefound event to renew the cache
     last_edit: '1625837814592', // result form Date.now()
 }
 
@@ -22,10 +23,10 @@ self.addEventListener('fetch', (event) => {
     else {
         event.respondWith(
             (async function () {
-                var response = await caches.match(event.request)
+                var cache = await caches.open('v1')
+                var response = await cache.match(event.request)
                 if (!response) {
                     // console.log(`from Internet( ${event.request.url} )`)
-                    var cache = await caches.open('v1')
                     var fetch_response = fetch(event.request)
                     var clone_response = (await fetch_response).clone()
                     if (!clone_response.ok)

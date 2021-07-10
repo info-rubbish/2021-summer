@@ -2,7 +2,7 @@ package api
 
 import (
 	"errors"
-	"main/src/config"
+	"main/src/database"
 	"main/src/tokens"
 	"net/http"
 	"time"
@@ -39,18 +39,12 @@ type ModelUser struct {
 // }
 
 func Err2Restful(s *gin.Context, e error) {
-	if err, ok := e.(*config.HttpErr); ok {
-		s.JSON(err.Code, &Resp{
-			Error:   true,
-			Message: err.Error(),
-		})
-		return
-	}
 	var c int = http.StatusInternalServerError
 	switch errors.Unwrap(e) {
 	case tokens.ErrEmpty:
 		c = http.StatusBadRequest
 	case tokens.ErrNotFind:
+	case database.ErrPasswordNotMatch:
 		c = http.StatusUnauthorized
 	case tokens.ErrNotFind:
 	case gorm.ErrRecordNotFound:

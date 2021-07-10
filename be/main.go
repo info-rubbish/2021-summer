@@ -35,7 +35,10 @@ func main() {
 		}
 	}()
 	router := gin.Default()
-	router.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AddAllowHeaders("Authorization")
+	corsConfig.AllowAllOrigins = true
+	router.Use(cors.New(corsConfig))
 
 	// some router
 	// token
@@ -44,7 +47,9 @@ func main() {
 	router.PUT("token", api.PutToken)
 	// user
 	router.GET("user", api.GetUser)
-	router.PUT("user", api.PutUser)
+	router.POST("user", api.PostUser)
+	router.PATCH("user", api.PatchUser)
+	router.DELETE("user", api.DeleteUser)
 
 	server := &http.Server{
 		Addr:    ":3623",

@@ -43,7 +43,7 @@ func PostToken(s *gin.Context) {
 			"token": &ModelToken{
 				Token:   token,
 				Created: time.Now(),
-				TTL:     config.TokenTTL,
+				TTL:     config.TokenTTL / time.Millisecond,
 			},
 			"user": &ModelUser{
 				Created: user.Created,
@@ -54,18 +54,8 @@ func PostToken(s *gin.Context) {
 	})
 }
 
-type DeleteTokenReq struct {
-	Token string `json:"token"`
-}
-
 func DeleteToken(s *gin.Context) {
-	req := &DeleteTokenReq{}
-	s.BindJSON(req)
-	if _, err := tokens.TokenStore.GetToken(req.Token); err != nil {
-		Err2Restful(s, err)
-		return
-	}
-	if err := tokens.TokenStore.DestroyToken(req.Token); err != nil {
+	if err := tokens.TokenStore.DestroyToken(s.GetHeader("Authorization")); err != nil {
 		Err2Restful(s, err)
 		return
 	}
@@ -76,14 +66,8 @@ func DeleteToken(s *gin.Context) {
 
 }
 
-type PutTokenReq struct {
-	Token string `json:"token"`
-}
-
 func PutToken(s *gin.Context) {
-	req := &PutTokenReq{}
-	s.BindJSON(req)
-	token, err := tokens.TokenStore.ReNewToken(req.Token)
+	token, err := tokens.TokenStore.ReNewToken(s.GetHeader("Authorization"))
 	if err != nil {
 		Err2Restful(s, err)
 		return

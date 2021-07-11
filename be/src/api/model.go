@@ -1,7 +1,7 @@
 package api
 
 import (
-	"errors"
+	"fmt"
 	"main/src/database"
 	"main/src/tokens"
 	"net/http"
@@ -34,13 +34,10 @@ type ModelUser struct {
 	Name    string    `json:"name"`
 }
 
-// type TokenData struct {
-// 	Name string `json:"name"`
-// }
-
 func Err2Restful(s *gin.Context, e error) {
+	fmt.Printf("%T\n", e)
 	var c int = http.StatusInternalServerError
-	switch errors.Unwrap(e) {
+	switch e {
 	case tokens.ErrEmpty:
 		c = http.StatusBadRequest
 	case tokens.ErrNotFind:
@@ -50,6 +47,7 @@ func Err2Restful(s *gin.Context, e error) {
 	case gorm.ErrRecordNotFound:
 		c = http.StatusNotFound
 	}
+
 	s.JSON(c, &Resp{
 		Error:   true,
 		Message: e.Error(),

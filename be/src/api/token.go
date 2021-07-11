@@ -18,7 +18,13 @@ type PostTokenReq struct {
 
 func PostToken(s *gin.Context) {
 	req := &PostTokenReq{}
-	s.BindJSON(req)
+	if err := s.ShouldBindJSON(req); err != nil {
+		s.JSON(http.StatusBadRequest, &Resp{
+			Error:   true,
+			Message: err.Error(),
+		})
+		return
+	}
 	if req.Name == "" || req.Password == "" {
 		s.JSON(http.StatusUnprocessableEntity, &Resp{
 			Error:   true,

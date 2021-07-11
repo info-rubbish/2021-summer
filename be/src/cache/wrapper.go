@@ -2,6 +2,7 @@ package cache
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 )
 
@@ -38,6 +39,7 @@ func (s *Wrapper) Load(pointer interface{}, key string, db FromDB) error {
 		ptr.Elem().Set(rv.Elem())
 		return nil
 	}
+	fmt.Printf("\nLoad '%s' from db \n", key)
 	v, err := db(key)
 	if err != nil {
 		return err

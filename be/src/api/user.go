@@ -44,7 +44,19 @@ func PatchUser(s *gin.Context) {
 		return
 	}
 	req := &PatchUserReq{}
-	s.BindJSON(req)
+	if err := s.ShouldBindJSON(req); err != nil {
+		s.JSON(http.StatusBadRequest, &Resp{
+			Error:   true,
+			Message: err.Error(),
+		})
+		return
+	}
+	if req.Name == "" && req.Password == "" {
+		s.JSON(http.StatusUnprocessableEntity, &Resp{
+			Error:   true,
+			Message: "need name or password",
+		})
+	}
 	cache.CacheStore.Del(id)
 	if err := database.ChangeUserInfo(id, database.UserConfig{
 		Name:     req.Name,
@@ -65,7 +77,13 @@ type PostUserReq struct {
 
 func PostUser(s *gin.Context) {
 	req := &PostUserReq{}
-	s.BindJSON(req)
+	if err := s.ShouldBindJSON(req); err != nil {
+		s.JSON(http.StatusBadRequest, &Resp{
+			Error:   true,
+			Message: err.Error(),
+		})
+		return
+	}
 	if req.Name == "" || req.Password == "" {
 		s.JSON(http.StatusUnprocessableEntity, &Resp{
 			Error:   true,
@@ -84,7 +102,7 @@ func PostUser(s *gin.Context) {
 	}
 
 	s.JSON(http.StatusOK, &Resp{
-		Message: "",
+		Message: "create user success",
 		Data: map[string]interface{}{
 			"user": &ModelUser{
 				Created: user.Created,

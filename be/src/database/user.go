@@ -12,9 +12,9 @@ import (
 
 type User struct {
 	Created  time.Time `gorm:"autoCreateTime"`
-	ID       string    `gorm:"primaryKey"`
-	Name     string    `gorm:"primaryKey"`
-	Password []byte
+	ID       string    `gorm:"primaryKey;unique;not null"`
+	Name     string    `gorm:"primaryKey;unique;not null"`
+	Password []byte    `gorm:"not null"`
 }
 
 type UserConfig struct {
@@ -40,9 +40,13 @@ func UserLogin(s *gin.Context, name string, password string) (*User, error) {
 }
 
 func ChangeUserInfo(id string, c UserConfig) error {
+	var hashPassword []byte
+	if c.Password != "" {
+		hashPassword = tokens.Hash([]byte(c.Password))
+	}
 	if err := DB.Model(&User{}).Where("id=?", id).Updates(&User{
 		Name:     c.Name,
-		Password: tokens.Hash([]byte(c.Password)),
+		Password: hashPassword,
 	}).Error; err != nil {
 		return err
 	}

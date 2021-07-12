@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"main/src/database"
 	"main/src/tokens"
 	"net/http"
@@ -35,15 +34,12 @@ type ModelUser struct {
 }
 
 func Err2Restful(s *gin.Context, e error) {
-	fmt.Printf("%T\n", e)
 	var c int = http.StatusInternalServerError
 	switch e {
 	case tokens.ErrEmpty:
 		c = http.StatusBadRequest
-	case tokens.ErrNotFind:
-	case database.ErrPasswordNotMatch:
+	case tokens.ErrNotFind, tokens.ErrExpired, database.ErrPasswordNotMatch:
 		c = http.StatusUnauthorized
-	case tokens.ErrNotFind:
 	case gorm.ErrRecordNotFound:
 		c = http.StatusNotFound
 	}

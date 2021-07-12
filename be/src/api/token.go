@@ -12,8 +12,8 @@ import (
 )
 
 type PostTokenReq struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	Name     string `json:"name" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func PostToken(s *gin.Context) {
@@ -22,13 +22,6 @@ func PostToken(s *gin.Context) {
 		s.JSON(http.StatusBadRequest, &Resp{
 			Error:   true,
 			Message: err.Error(),
-		})
-		return
-	}
-	if req.Name == "" || req.Password == "" {
-		s.JSON(http.StatusUnprocessableEntity, &Resp{
-			Error:   true,
-			Message: "name & password are required",
 		})
 		return
 	}

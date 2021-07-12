@@ -33,8 +33,8 @@ func GetUser(s *gin.Context) {
 }
 
 type PatchUserReq struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	Name     string `json:"name" binding:"required_without=Password"`
+	Password string `json:"password" binding:"required_without=Name"`
 }
 
 func PatchUser(s *gin.Context) {
@@ -51,12 +51,6 @@ func PatchUser(s *gin.Context) {
 		})
 		return
 	}
-	if req.Name == "" && req.Password == "" {
-		s.JSON(http.StatusUnprocessableEntity, &Resp{
-			Error:   true,
-			Message: "need name or password",
-		})
-	}
 	cache.CacheStore.Del(id)
 	if err := database.ChangeUserInfo(id, database.UserConfig{
 		Name:     req.Name,
@@ -71,8 +65,8 @@ func PatchUser(s *gin.Context) {
 }
 
 type PostUserReq struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	Name     string `json:"name" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func PostUser(s *gin.Context) {
@@ -81,13 +75,6 @@ func PostUser(s *gin.Context) {
 		s.JSON(http.StatusBadRequest, &Resp{
 			Error:   true,
 			Message: err.Error(),
-		})
-		return
-	}
-	if req.Name == "" || req.Password == "" {
-		s.JSON(http.StatusUnprocessableEntity, &Resp{
-			Error:   true,
-			Message: "name & password are required",
 		})
 		return
 	}
@@ -124,6 +111,7 @@ func DeleteUser(s *gin.Context) {
 		return
 	}
 	cache.CacheStore.Del(id)
+	tokens.TokenStore.DestroyToken(s.GetHeader("Authorization"))
 	s.JSON(http.StatusOK, &Resp{
 		Message: "delete account success",
 	})

@@ -34,10 +34,46 @@
 
 # 編譯
 
+## 前端
+
+```bash
+
+# start web server
+fe_start.bat
+
+# 或著
+cd fe
+yarn vite
+```
+
 ## 後端
 
 ```bash
 
 # start API server
 be_start.bat
+
+# 或著
+cd be
+go run .
 ```
+
+# 資源
+
+## ICON
+
+- [Heroicons (已裝)](https://heroicons.com/)
+- [Flaticon](https://www.flaticon.com/icons)
+
+## 動圖
+
+- [lottie player](https://github.com/LottieFiles/lottie-player)
+- [lottie animation](https://lottiefiles.com/featured)
+- [icon8 animation](https://icons8.com/animated-icons)
+- [Lordicon](https://lordicon.com/icons)
+
+## 意示圖
+
+- [Smartmockups](https://smartmockups.com/)
+- [Pixeltrue](https://mockups.pixeltrue.com/)
+- [Mockmagic](https://studio.mockmagic.com/)

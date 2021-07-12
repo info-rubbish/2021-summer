@@ -1,0 +1,3 @@
+@echo off
+echo starting......
+cmd /c "cd %~dp0/fe && yarn vite"

@@ -6,7 +6,6 @@ import (
 	"main/src/tokens"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -28,7 +27,7 @@ func (s *User) BeforeCreate(tx *gorm.DB) error {
 }
 
 // return user,error
-func UserLogin(s *gin.Context, name string, password string) (*User, error) {
+func UserLogin(name string, password string) (*User, error) {
 	var user User
 	if err := DB.First(&user, "name=?", name).Error; err != nil {
 		return nil, err

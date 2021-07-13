@@ -50,6 +50,11 @@ func main() {
 	router.POST("user", api.PostUser)
 	router.PATCH("user", api.PatchUser)
 	router.DELETE("user", api.DeleteUser)
+	// course
+	router.POST("course", api.PostCourse)
+	router.GET("course/:id", api.GetCourse)
+	router.DELETE("course", api.DeleteCourse)
+	router.PATCH("course", api.PatchCourse)
 
 	server := &http.Server{
 		Addr:    ":3623",

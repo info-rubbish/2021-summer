@@ -33,6 +33,14 @@ type ModelUser struct {
 	Name    string    `json:"name"`
 }
 
+type ModelCourse struct {
+	Created     time.Time `json:"created"`
+	ID          string    `json:"id"`
+	Author      string    `json:"author"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+}
+
 func Err2Restful(s *gin.Context, e error) {
 	var c int = http.StatusInternalServerError
 	switch e {

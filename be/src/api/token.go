@@ -25,7 +25,7 @@ func PostToken(s *gin.Context) {
 		})
 		return
 	}
-	user, err := database.UserLogin(s, req.Name, req.Password)
+	user, err := database.UserLogin(req.Name, req.Password)
 	if err != nil {
 		Err2Restful(s, err)
 		return

@@ -30,7 +30,7 @@ func NewWrapper(v Cache) *Wrapper {
 // pointer must be a pointer
 func (s *Wrapper) Load(pointer interface{}, key string, db FromDB) error {
 	ptr := reflect.ValueOf(pointer)
-	if ptr.Kind() != reflect.Ptr {
+	if ptr.Kind() != reflect.Ptr || key == "" || db == nil {
 		return ErrMustBePointer
 	}
 	if v, ok := s.Get(key); ok {

@@ -9,4 +9,5 @@ const (
 	TokenBytes     uint          = 64
 	CacheShard2N   uint64        = 3
 	CacheLength2N  uint64        = 7
+	Debug          bool          = false
 )

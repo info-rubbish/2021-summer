@@ -45,9 +45,10 @@ func PostToken(s *gin.Context) {
 				TTL:     config.TokenTTL / time.Millisecond,
 			},
 			"user": &ModelUser{
-				Created: user.Created,
-				ID:      user.ID,
-				Name:    user.Name,
+				Created:    user.Created,
+				ID:         user.ID,
+				Name:       user.Name,
+				Permission: user.Permission,
 			},
 		},
 	})

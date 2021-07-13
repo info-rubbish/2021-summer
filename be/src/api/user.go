@@ -24,9 +24,10 @@ func GetUser(s *gin.Context) {
 		Message: "get info success",
 		Data: map[string]interface{}{
 			"user": &ModelUser{
-				Created: user.Created,
-				ID:      user.ID,
-				Name:    user.Name,
+				Created:    user.Created,
+				ID:         user.ID,
+				Name:       user.Name,
+				Permission: user.Permission,
 			},
 		},
 	})
@@ -92,9 +93,10 @@ func PostUser(s *gin.Context) {
 		Message: "create user success",
 		Data: map[string]interface{}{
 			"user": &ModelUser{
-				Created: user.Created,
-				ID:      user.ID,
-				Name:    user.Name,
+				Created:    user.Created,
+				ID:         user.ID,
+				Name:       user.Name,
+				Permission: user.Permission,
 			},
 		},
 	})

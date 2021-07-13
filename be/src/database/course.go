@@ -18,7 +18,24 @@ type Course struct {
 }
 
 func (s *Course) BeforeCreate(tx *gorm.DB) error {
+	if err := CheckPermission(s.Author); err != nil {
+		return err
+	}
 	s.ID = tokens.RandomID(config.RandomIDLength)
+	return nil
+}
+
+func (s *Course) BeforeUpdate(tx *gorm.DB) error {
+	if err := CheckPermission(s.Author); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Course) BeforeDelete(tx *gorm.DB) error {
+	if err := CheckPermission(s.Author); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -45,8 +62,11 @@ func CreateCourse(c *CourseConfig) (string, error) {
 
 func DeleteCourse(id, author string) error {
 	course := &Course{}
-	if err := DB.First(course, "id=? AND author=?", id, author).Error; err != nil {
+	if err := DB.First(course, "id=?", id).Error; err != nil {
 		return err
+	}
+	if course.Author != author {
+		return ErrPermissionDenied
 	}
 	if err := DB.Delete(course).Error; err != nil {
 		return err

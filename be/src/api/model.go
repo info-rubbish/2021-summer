@@ -28,9 +28,10 @@ type ModelToken struct {
 }
 
 type ModelUser struct {
-	Created time.Time `json:"created"`
-	ID      string    `json:"id"`
-	Name    string    `json:"name"`
+	Created    time.Time `json:"created"`
+	ID         string    `json:"id"`
+	Name       string    `json:"name"`
+	Permission uint      `json:"permission"`
 }
 
 type ModelCourse struct {

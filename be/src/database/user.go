@@ -10,10 +10,11 @@ import (
 )
 
 type User struct {
-	Created  time.Time `gorm:"autoCreateTime"`
-	ID       string    `gorm:"primaryKey;unique;not null"`
-	Name     string    `gorm:"primaryKey;unique;not null"`
-	Password []byte    `gorm:"not null"`
+	Created    time.Time `gorm:"autoCreateTime"`
+	Permission uint      `gorm:"not null"`
+	ID         string    `gorm:"primaryKey;unique;not null"`
+	Name       string    `gorm:"primaryKey;unique;not null"`
+	Password   []byte    `gorm:"not null"`
 }
 
 type UserConfig struct {
@@ -53,7 +54,11 @@ func ChangeUserInfo(id string, c UserConfig) error {
 }
 
 func CreateUser(name, password string) error {
-	if err := DB.Create(&User{Name: name, Password: tokens.Hash([]byte(password))}).Error; err != nil {
+	if err := DB.Create(&User{
+		Permission: 1,
+		Name:       name,
+		Password:   tokens.Hash([]byte(password)),
+	}).Error; err != nil {
 		return err
 	}
 	return nil

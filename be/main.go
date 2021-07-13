@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"main/src/api"
+	"main/src/config"
 	"main/src/database"
 	"math/rand"
 	"net/http"
@@ -65,14 +66,19 @@ func main() {
 			panic(err)
 		}
 	}()
-	tool := database.NewDebug()
+	var tool *database.Debug
+	if config.Debug {
+		tool = database.NewDebug()
+	}
 	println("server started")
 	quit := make(chan os.Signal, 5)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	tool.Stop(ctx)
+	if config.Debug {
+		tool.Stop(ctx)
+	}
 	if err := server.Shutdown(ctx); err != nil {
 		panic(err)
 	}

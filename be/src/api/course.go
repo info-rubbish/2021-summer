@@ -114,22 +114,8 @@ func PatchCourse(s *gin.Context) {
 		return
 	}
 	cache.CacheStore.Del(req.ID)
-	course := &database.Course{}
-	if err := cache.CacheStore.Load(course, req.ID, database.GetCourse); err != nil {
-		Err2Restful(s, err)
-		return
-	}
 	s.JSON(http.StatusOK, &Resp{
 		Message: "Change success",
-		Data: map[string]interface{}{
-			"course": &ModelCourse{
-				Created:     course.Created,
-				ID:          course.ID,
-				Author:      course.Author,
-				Title:       course.Title,
-				Description: course.Description,
-			},
-		},
 	})
 
 }

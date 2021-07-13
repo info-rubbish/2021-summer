@@ -21,8 +21,9 @@ func init() {
 		panic(err)
 	}
 	user := &User{
-		Name:     "paula",
-		Password: tokens.Hash([]byte("20040623")),
+		Permission: 2,
+		Name:       "paula",
+		Password:   tokens.Hash([]byte("20040623")),
 	}
 	if err := db.First(user, "name=?", "paula").Error; err != nil {
 		if err := db.Create(user).Error; err != nil {

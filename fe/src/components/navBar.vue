@@ -2,14 +2,13 @@
     <div class="sticky top-0" id="app1">
         <div class="lg:hidden">
             <!--lg+ hide-->
-            <div class="fixed" v-on:click="switchsidebar()">Open</div>
+            <div class="fixed" v-on:click="switchsidebar()">換成icon吧!</div>
         </div>
         <div class="hidden lg:block">
             <!--lg- hide-->
             <ul class="list">
-                <li>Home</li>
-                <li>Home</li>
-                <li>Home</li>
+                <li><router-link to="/home">主頁</router-link></li>
+                <li><router-link to="/login">登入/註冊</router-link></li>
             </ul>
         </div>
         <div class="fixed">
@@ -19,11 +18,10 @@
                 v-bind:class="navClass"
                 id="sidebarT"
             >
-                <div v-on:click="switchsidebar()">Close</div>
+                <div v-on:click="switchsidebar()">關閉</div>
                 <ul>
-                    <li>Home</li>
-                    <li>Home</li>
-                    <li>Home</li>
+                    <li><router-link to="/home">主頁</router-link></li>
+                    <li><router-link to="/login">登入/註冊</router-link></li>
                 </ul>
             </div>
         </div>

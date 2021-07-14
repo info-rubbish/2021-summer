@@ -56,6 +56,9 @@ func main() {
 	router.GET("course/:id", api.GetCourse)
 	router.DELETE("course", api.DeleteCourse)
 	router.PATCH("course", api.PatchCourse)
+	// courses
+	router.GET("courses/user/:id", api.GetCoursesByUser)
+	router.GET("courses/search/:text", api.GetCoursesBySearch)
 
 	server := &http.Server{
 		Addr:    ":3623",

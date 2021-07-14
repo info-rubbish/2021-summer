@@ -10,4 +10,5 @@ const (
 	CacheShard2N   uint64        = 3
 	CacheLength2N  uint64        = 7
 	Debug          bool          = false
+	SQLLimmit      int           = 10
 )

@@ -11,7 +11,7 @@ import (
 type Course struct {
 	Created     time.Time `gorm:"autoCreateTime"`
 	ID          string    `gorm:"primaryKey;unique;not null"`
-	Author      string    `gorm:"not null"`
+	Author      string    `gorm:"primaryKey;not null"`
 	Title       string    `gorm:"not null"`
 	Description string    `gorm:"not null"`
 	Content     string    `gorm:"not null"`
@@ -74,14 +74,6 @@ func DeleteCourse(id, author string) error {
 	return nil
 }
 
-func GetCourse(id string) (interface{}, error) {
-	course := &Course{}
-	if err := DB.First(course, "id=?", id).Error; err != nil {
-		return nil, err
-	}
-	return course, nil
-}
-
 func ChangeCourse(id, author string, c *CourseConfig) error {
 	if err := DB.Model(&Course{}).Where("id=? AND author = ?", id, author).Updates(&Course{
 		Title:       c.Title,
@@ -91,4 +83,36 @@ func ChangeCourse(id, author string, c *CourseConfig) error {
 		return err
 	}
 	return nil
+}
+
+func SearchCourses(text string, offset int, order string) (*[]*Course, error) {
+	if text == "" {
+		return nil, ErrEmpty
+	}
+	text = "%" + text + "%"
+	courses := make([]*Course, config.SQLLimmit)
+	if err := DB.Offset(config.SQLLimmit*offset).Limit(config.SQLLimmit).Where("title LIKE ? OR description LIKE ?", text, text).Order("created "+map[bool]string{true: "DESC", false: "ASC"}[order == "desc"]).Select("created", "id", "author", "title", "description").Find(&courses).Error; err != nil {
+		return nil, err
+	}
+	return &courses, nil
+}
+
+func GetUserCourses(id string, offset int, order string) (*[]*Course, error) {
+	if id == "" {
+		return nil, ErrEmpty
+	}
+	courses := make([]*Course, config.SQLLimmit)
+	if err := DB.Offset(config.SQLLimmit*offset).Limit(config.SQLLimmit).Where("author = ?", id).Order("created "+map[bool]string{true: "DESC", false: "ASC"}[order == "desc"]).Select("created", "id", "author", "title", "description").Find(&courses).Error; err != nil {
+		return nil, err
+	}
+	return &courses, nil
+}
+
+// cache
+func GetCourse(id string) (interface{}, error) {
+	course := &Course{}
+	if err := DB.First(course, "id=?", id).Error; err != nil {
+		return nil, err
+	}
+	return course, nil
 }

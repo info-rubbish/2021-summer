@@ -2,7 +2,7 @@
     <div>
         <navbar />
         <div class="bg-gray-400">
-            <div class="ml-6/12 mr-6/12 pt-12">
+            <div class="ml-4 mr-4 pt-12">
                 <form class="my-2 p-2" @submit.prevent="query">
                     <input
                         class="
@@ -28,17 +28,17 @@
                             p-2
                             rounded-xl
                             course
-                            grid grid-flow-col
+                            flex flex-row justify-between
                             mt-2
                         "
                     >
                         <span class="hidden">{{ course.id }}</span>
-                        <span class="w-1/5">{{ course.title }}</span>
-                        <span class="w-1/5">{{
+                        <span class="w-1/5 break-words">{{ course.title }}</span>
+                        <span class="w-1/5 break-words">{{
                             ParseTime(course.created)
                         }}</span>
-                        <span class="w-1/5">{{ course.author }}</span>
-                        <span class="w-1/5">{{ course.description }}</span>
+                        <span class="w-1/5 break-words">{{ course.author }}</span>
+                        <span class="w-1/5 break-words">{{ course.description }}</span>
                         <!-- 標題： 作者： -->
                         <!-- 作者： {{ course.id }} 簡敘： -->
                     </li>
@@ -127,10 +127,9 @@ export default {
         },
         async search() {
             const query = this.$route.params.query
-            var courseArr = (
-                await this.$store.dispatch('QueryCourse', { query })
-            ).data.data.courses
-            this.$data.courseset = courseArr
+            var courses = await this.$store.dispatch('QueryCourses', [query])
+            if(!courses)return
+            this.$data.courseset =courses
         },
     },
     data: function () {

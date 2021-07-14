@@ -47,14 +47,6 @@
                     >主頁</router-link
                 >
             </li>
-            <li
-                class="hover:bg-blue-300 rounded-xl mx-2 my-2 p-2"
-                v-show="!CheckTTL"
-            >
-                <router-link to="/login" class="whitespace-nowrap"
-                    >登入</router-link
-                >
-            </li>
             <!--
             <li v-on:submit.prevent="logout" class="rounded-xl mx-2 my-2">
                 <input
@@ -69,6 +61,14 @@
             <li class="hover:bg-blue-300 rounded-xl mx-2 my-2 p-2">
                 <router-link to="/article/list" class="whitespace-nowrap"
                     >課程</router-link
+                >
+            </li>
+            <li
+                class="hover:bg-blue-300 rounded-xl mx-2 my-2 p-2"
+                v-show="!CheckTTL"
+            >
+                <router-link to="/login" class="whitespace-nowrap"
+                    >登入</router-link
                 >
             </li>
             <li

@@ -139,8 +139,7 @@ export default {
             const password = e.target[1].value
             const password_ = e.target[2].value
             if (password == password_) {
-                await new this.$store.dispatch('NewUser', { name, password })
-                this.$router.push('/home')
+                if(await this.$store.dispatch('NewUserAndLogin', { name, password }))this.$router.push('/home')
             } else this.alert('密碼不同')
         },
         ...mapMutations(['addAlert']),

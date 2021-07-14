@@ -26,15 +26,15 @@ export default {
             alerts: [],
             login: localStorage.getItem('login') || false,
             // some user info
-            user: JSON.parse(localStorage.getItem('self') || '{}'),
+            user: JSON.parse(localStorage.getItem('user') || '{}'),
             // token info
             token: token,
         }
     },
     mutations: {
         Permission(state) {
-            if (state.self == {}) return 0
-            return state.self.permission
+            if (state.user == {}) return 0
+            return state.user.permission
         },
         popAlert(state) {
             state.alerts.shift()
@@ -50,15 +50,17 @@ export default {
         setLogin(state, payload) {
             state.login = payload
             if (!payload) {
+                state.token={}
+                state.user={}
                 localStorage.removeItem('token')
-                localStorage.removeItem('self')
+                localStorage.removeItem('user')
                 localStorage.removeItem('login')
                 refleshAPI('')
             }
         },
         setSelf(state, payload) {
-            state.self = payload
-            localStorage.setItem('self', JSON.stringify(payload))
+            state.user = payload
+            localStorage.setItem('user', JSON.stringify(payload))
         },
         setToken(state, payload) {
             state.token = payload
@@ -79,51 +81,56 @@ export default {
     },
     actions: {
         /**
-         *
+         *  id,offset,order
          */
-        async QueryCourse(context, data) {
+        async QueryCourses(context, payload) {
             try {
-                const resp = await send.get('/courses/search/' + data.query)
+                const resp = await send.get('/courses/search/' + payload[0],{
+                    params:{
+                        offset:payload[1],
+                        order:payload[2]
+                    }
+                })
                 if (resp.data.error) {
                     context.commit('addAlert', [
                         2,
                         '查詢失敗',
                         resp.data.message,
                     ])
-                    return false
+                    return null
                 }
-                return true
+                return resp.data.data.courses
             } catch (error) {
                 context.commit('addAlert', [
                     2,
                     '查詢失敗',
                     error.response.data.message,
                 ])
-                return false
+                return null
             }
         },
         /**
          *
          */
-        async CourseInfo(context, data) {
+        async CourseInfo(context, payload) {
             try {
-                const resp = await send.get('/course/' + data.id)
+                const resp = await send.get('/course/' + payload)
                 if (resp.data.error) {
                     context.commit('addAlert', [
                         2,
                         '查詢失敗',
                         resp.data.message,
                     ])
-                    return false
+                    return null
                 }
-                return true
+                return resp.data.data
             } catch (error) {
                 context.commit('addAlert', [
                     2,
                     '查詢失敗',
                     error.response.data.message,
                 ])
-                return false
+                return null
             }
         },
 
@@ -132,7 +139,7 @@ export default {
          */
         async ChangeCourse(context, data) {
             try {
-                const req = await send.patch('/course', data)
+                const resp = await send.patch('/course', data)
                 if (resp.data.error) {
                     context.commit('addAlert', [
                         2,
@@ -153,55 +160,66 @@ export default {
         },
 
         /**
-         *
+         * 0 title 1 des...,2 content
          */
-        async CreateCourse(context, data) {
+        async CreateCourse(context, payload) {
             try {
-                const resp = await send.post('/course', data)
+                const resp = await send.post('/course', {
+                    "title":payload[0],
+                    description:payload[1],
+                    content:payload[2]
+                })
                 if (resp.data.error) {
                     context.commit('addAlert', [
                         2,
                         '創建失敗',
                         resp.data.message,
                     ])
-                    return false
-                }
-                return
+                    return null
+                }    
+                return resp.data.data.course
             } catch (error) {
+                window.e=error
+                console.log(error);
                 context.commit('addAlert', [
                     2,
                     '創建失敗',
                     error.response.data.message,
                 ])
-                return false
+                return null
             }
         },
 
         /**
-         *
+         *  paylaod 0 offset,1 order
          */
-        async GetSelfCourse(context) {
+        async GetSelfCourses(context, payload) {
             try {
-                console.log(context.user.id)
-                const resp = await (send.get('/courses/user/' + context.user.id))
-                console.log('!')
+                const resp = await send.get(
+                    '/courses/user/' + context.state.user.id,
+                    {
+                        params: {
+                            offset: payload[0],
+                            order: payload[1],
+                        },
+                    }
+                )
                 if (resp.data.error) {
                     context.commit('addAlert', [
                         2,
                         '查詢失敗',
                         resp.data.message,
                     ])
-                    return false
+                    return null
                 }
-                return true
+                return resp.data.data.courses
             } catch (error) {
-                console.log(error)
                 context.commit('addAlert', [
                     2,
                     '查詢失敗',
                     error.response.data.message,
                 ])
-                return false
+                return null
             }
         },
 
@@ -385,11 +403,23 @@ export default {
          */
         async GetSelfInfo(state) {
             try {
-                // const req = await send.get('/user')
-                // return req
-                return { status: '200', data: { data: { user: state.self } } }
+                const resp = await send.get('/user')
+                if (resp.data.error) {
+                    context.commit('addAlert', [
+                        2,
+                        '查詢帳號資訊失敗',
+                        resp.data.message,
+                    ])
+                    context.commit('setLogin', false)
+                    return false
+                }
             } catch (error) {
-                // return error.request
+                context.commit('addAlert', [
+                    2,
+                    '查詢帳號資訊失敗',
+                    error.response.data.message,
+                ])
+                return false
             }
         },
     },

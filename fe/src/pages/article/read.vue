@@ -1,9 +1,15 @@
 <template>
     <div>
         <navbar />
-        正在閱讀{{ title }}#{{ $route.params.id }} {{ description }}
-        {{ authorId }}
-        <div v-html="content"></div>
+        <div class="ml-4 mr-4 mt-16 bg-gray-200 p-2 rounded-md">
+            <h1 class="text-xl mt-2">標題：{{ title }}</h1>
+            <h1 class="text-xl mt-2">簡介：{{ description }}</h1>
+            <h1 class="text-xl mt-2">作者：{{ authorId }}</h1>
+        </div>
+        <div
+            v-html="content"
+            class="ml-4 mr-4 mt-8 mb-4 bg-gray-200 p-2 rounded-md md-preview"
+        ></div>
     </div>
 </template>
 <script>
@@ -18,8 +24,7 @@ export default {
     },
     async mounted() {
         const id = this.$route.params.id
-        const course = (await this.$store.dispatch('CourseInfo', { id })).data
-            .data
+        const course = await this.$store.dispatch('CourseInfo', id)
         this.$data.description = course.course.description
         this.$data.title = course.course.title
         this.$data.time = course.course.created
@@ -29,4 +34,5 @@ export default {
     methods: {},
 }
 </script>
-<style scoped></style>
+<style scoped>
+</style>

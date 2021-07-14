@@ -1,7 +1,7 @@
 <template>
     <navbar />
     <div class="flex justify-center items-center p-10">
-        <div class="block w-60">
+        <div class="block w-72 bg-gray-200">
             <div class="flex justify-start p-2">
                 <button
                     class="hover:bg-blue-300 bg-gray-300 p-2 my-2"
@@ -55,7 +55,7 @@
                         type="submit"
                         class="hover:bg-blue-300 bg-gray-300 p-2 mt-4"
                     >
-                        註冊
+                       登入
                     </button>
                 </div>
             </form>
@@ -120,6 +120,8 @@
 
 <script>
 import Navbar from '@/components/navBar.vue'
+import { mapMutations } from 'vuex'
+
 export default {
     name: 'Login',
     components: { Navbar },
@@ -130,18 +132,17 @@ export default {
             e.target[0].value = ''
             e.target[1].value = ''
             var res = await this.$store.dispatch('Login', { name, password })
-            if (res.status == '200') this.$router.push('/home')
-            this.alert('密碼無效')
+            if (res) this.$router.push('/home')
         },
         async regist(e) {
             const name = e.target[0].value
             const password = e.target[1].value
             const password_ = e.target[2].value
             if (password == password_) {
-                await new this.$store.dispatch('NewUser', { name, password })
-                this.$router.push('/home')
+                if(await this.$store.dispatch('NewUserAndLogin', { name, password }))this.$router.push('/home')
             } else this.alert('密碼不同')
         },
+        ...mapMutations(['addAlert']),
         alert(msg) {
             this.$data.alertMsg = msg
         },

@@ -7,6 +7,6 @@
 
 <script>
 export default {
-    name:"footer"
+    name:"navfooter"
 }
 </script>

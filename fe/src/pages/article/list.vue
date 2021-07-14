@@ -1,11 +1,9 @@
 <template>
     <div>
         <navbar />
-        <ul>
-            <li>article 1</li>
-            <li>article 2</li>
-            <li>article 3</li>
-        </ul>
+        <div class="mt-16 ml-1/12 mr-1/12 pl-14 pr-14">
+            <h4 class="text-2xl">推薦課程</h4>
+        </div>
     </div>
 </template>
 <script>

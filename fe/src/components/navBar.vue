@@ -1,6 +1,13 @@
 <template>
     <div
-        class="lg:sticky lg:h-auto lg:w-full h-full fixed top-0 rounded-2xl"
+        class="
+            lg:sticky lg:h-auto lg:w-full
+            h-full
+            fixed
+            top-0
+            rounded-2xl
+            z-40
+        "
         id="app1"
     >
         <div class="absolute z-50 lg:hidden">
@@ -12,18 +19,18 @@
         <ul
             class="
                 flex
-                lg:w-full lg:h-auto lg:transform-none lg:p-2 lg:flex-row
+                lg:w-full lg:h-auto lg:transform-none lg:p-2 lg:flex-row lg:ml-0
                 flex-col
                 p-10
                 h-full
                 justify-around
                 text-2xl
-                transition-transform
+                transition-all
                 transform
                 bg-gray-300
                 w-60
             "
-            :class="show ? 'translate-x-0' : '-translate-x-full'"
+            :class="show ? 'ml-0' :'-ml-60'"
         >
             <input
                 class="focus:outline-none rounded-xl w=4/12 p-2 block"
@@ -31,57 +38,56 @@
             />
             <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
                 <router-link to="/home" class="whitespace-nowrap"
-                    >&nbsp;主頁&nbsp;</router-link
+                    >主頁</router-link
                 >
             </li>
-            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
+            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2" v-show="!IsLogin">
                 <router-link to="/login" class="whitespace-nowrap"
-                    >&nbsp;登入&nbsp;</router-link
+                    >登入</router-link
                 >
             </li>
-            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
-                <router-link to="/login" class="whitespace-nowrap"
-                    >&nbsp;登出&nbsp;</router-link
-                >
-            </li>
-            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
+            <!--
+            <li v-on:submit.prevent="logout" class="rounded-xl mx-2 my-2">
+                <input
+                    class="hover:bg-blue-300 whitespace-nowrap"
+                    type="submit"
+                />
+            </li>-->
+            <!-- <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
                 <router-link to="/regist" class="whitespace-nowrap"
-                    >&nbsp;註冊&nbsp;</router-link
+                    >註冊</router-link
                 >
-            </li>
+            </li> -->
             <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
                 <router-link to="/article/list" class="whitespace-nowrap"
-                    >&nbsp;課程&nbsp;</router-link
+                    >課程</router-link
                 >
             </li>
-            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
-                <router-link to="#" class="whitespace-nowrap">
-                    &nbsp;帳號&nbsp;
+            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2" v-show="IsLogin">
+                <router-link to="/account" class="whitespace-nowrap">
+                    {{ accountName }}
                 </router-link>
             </li>
         </ul>
     </div>
 </template>
 <script>
-import 'vue'
 import { MenuIcon } from '@heroicons/vue/solid'
-import { api } from '@/utils/api.js'
-import localStorage from '@/utils/localstorage.js'
+// import { api } from '@/utils/api.js'
 
 export default {
     name: 'navBar',
-    methods: {
-        async logout(){
-            var res = await new api().Logout()
-            if(res) this.$router.push('/home')
+    methods: {},
+    async mounted() {
+        if (await this.$store.dispatch('CheckTTL')) {
+            var user = (await this.$store.dispatch('GetSelfInfo')).data.data
+                .user
+            this.$data.accountName = user.name
+            this.$data.IsLogin = true
         }
     },
     data() {
-        var api_ = new api()
-        if (api_.CheckTTL())
-        api_.GetSelfInfo().then(console.log)
-        else console('ttl!')
-        return { show: false }
+        return { show: false, accountName: '未登入', IsLogin: false }
     },
     components: {
         MenuIcon,
@@ -90,8 +96,3 @@ export default {
 // function app1
 // w-full
 </script>
-<style>
-ul.list > li {
-    display: inline-block;
-}
-</style>

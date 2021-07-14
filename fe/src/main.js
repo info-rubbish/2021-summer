@@ -2,11 +2,14 @@ import { createApp } from 'vue'
 import router from '@/router'
 import App from '@/App.vue'
 import axios from 'axios'
-import { api } from '@/utils/api.js'
 import '@/all.css'
-window.axios = axios
-window.api = api
+import {createStore} from 'vuex'
+import api from '@/utils/api.js'
+window.axios = axios 
 // window.axios=await import("axios")
+
 var app = createApp(App);
+var store=createStore(api);
+
 app.component(App.name, App);
-app.use(router).mount('#app');
+app.use(router).use(store).mount('#app');

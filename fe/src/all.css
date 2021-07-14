@@ -2,3 +2,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@charset "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500&display=swap";
+
+html,body,#app {
+    scroll-behavior: smooth;
+    min-height: 100vh;
+}
+* {
+    font-family: 'Noto Sans TC', sans-serif;
+}

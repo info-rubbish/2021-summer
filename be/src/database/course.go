@@ -26,6 +26,9 @@ func (s *Course) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (s *Course) BeforeUpdate(tx *gorm.DB) error {
+	if s.Author == "" {
+		return nil
+	}
 	if err := CheckPermission(s.Author); err != nil {
 		return err
 	}
@@ -76,7 +79,7 @@ func DeleteCourse(id, author string) error {
 
 func ChangeCourse(id, author string, c *CourseConfig) error {
 	course := &Course{}
-	if err := DB.First(course, "id=?", id).Error; err != nil {
+	if err := DB.Select("author").First(course, "id=?", id).Error; err != nil {
 		return err
 	}
 	if course.Author != author {

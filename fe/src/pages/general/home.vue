@@ -17,14 +17,15 @@
                     w-screen
                     object-cover
                     z-0
-                    lg:top-16
+                    lg:top-17
                     opacity-30
                 "
                 muted
                 autoplay
                 loop
-                src="https://vod-progressive.akamaized.net/exp=1626253275~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F3716%2F20%2F518580464%2F2414166248.mp4~hmac=a635a8093a4a9af990beafa1f953d382063dfa853caceaa3695d4fa3097e07ba/vimeo-prod-skyfire-std-us/01/3716/20/518580464/2414166248.mp4?download=1&filename=pexels-ron-lach-7013891.mp4"
+                src="/public/bg.mp4"
             ></video>
+            <!-- src="https://vod-progressive.akamaized.net/exp=1626253275~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F3716%2F20%2F518580464%2F2414166248.mp4~hmac=a635a8093a4a9af990beafa1f953d382063dfa853caceaa3695d4fa3097e07ba/vimeo-prod-skyfire-std-us/01/3716/20/518580464/2414166248.mp4?download=1&filename=pexels-ron-lach-7013891.mp4" -->
             <h1 class="p-10 text-white text-3xl bg-gray-800 z-10">
                 OO學習網<br />這裡，一個能讓你盡情享受學習的地方
             </h1>
@@ -83,9 +84,9 @@
                 </h2>
             </div>
         </div>
-        <div class="flex flex-col justify-center items-center" id="main">
+        <div class="flex flex-col justify-center items-center bg-gray-200" id="main">
             <h1 class="my-3 text-2xl p-10 text-center">緣起</h1>
-            <h1 class="text-2xl m-10 md:w-8/12 p-10 bg-gray-100 rounded-xl"> 
+            <h1 class="text-2xl m-10 md:w-8/12 p-10 rounded-xl bg-gray-400">  
                 現今我們認為許多貧窮的學生因為沒有適當的學習資源，
                 導致知識的缺乏，以致於他們會處於一個貧窮的循環中，
                 無法向上發展。我們欲利用線上教學平台推廣教育，

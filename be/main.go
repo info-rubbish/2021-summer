@@ -59,6 +59,7 @@ func main() {
 	// courses
 	router.GET("courses/user/:id", api.GetCoursesByUser)
 	router.GET("courses/search/:text", api.GetCoursesBySearch)
+	router.GET("courses/new", api.GetCoursesByDate)
 
 	server := &http.Server{
 		Addr:    ":3623",

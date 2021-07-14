@@ -118,6 +118,14 @@ func GetUserCourses(id string, offset int, order string) (*[]*Course, error) {
 	return &courses, nil
 }
 
+func GetDateCourses(offset int, order string) (*[]*Course, error) {
+	courses := make([]*Course, config.SQLLimmit)
+	if err := DB.Offset(config.SQLLimmit*offset).Limit(config.SQLLimmit).Order("created "+map[bool]string{true: "DESC", false: "ASC"}[order == "desc"]).Select("created", "id", "author", "title", "description").Find(&courses).Error; err != nil {
+		return nil, err
+	}
+	return &courses, nil
+}
+
 // cache
 func GetCourse(id string) (interface{}, error) {
 	course := &Course{}

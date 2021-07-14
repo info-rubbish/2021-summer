@@ -71,3 +71,28 @@ func GetCoursesBySearch(s *gin.Context) {
 		},
 	})
 }
+
+func GetCoursesByDate(s *gin.Context) {
+	_, err := tokens.TokenStore.GetToken(s.GetHeader("Authorization"))
+	if err != nil {
+		Err2Restful(s, err)
+		return
+	}
+	offset, _ := strconv.Atoi(s.Query("offset"))
+	if offset < 0 {
+		offset = 0
+	}
+	courses, err := database.GetDateCourses(offset, s.Query("order"))
+	if err != nil {
+		Err2Restful(s, err)
+		return
+	}
+
+	modelCourses := toModelCourses(courses)
+	s.JSON(http.StatusOK, &Resp{
+		Message: "get info success",
+		Data: map[string]interface{}{
+			"courses": modelCourses,
+		},
+	})
+}

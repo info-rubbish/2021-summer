@@ -75,7 +75,14 @@ func DeleteCourse(id, author string) error {
 }
 
 func ChangeCourse(id, author string, c *CourseConfig) error {
-	if err := DB.Model(&Course{}).Where("id=? AND author = ?", id, author).Updates(&Course{
+	course := &Course{}
+	if err := DB.First(course, "id=?", id).Error; err != nil {
+		return err
+	}
+	if course.Author != author {
+		return ErrPermissionDenied
+	}
+	if err := DB.Model(&Course{}).Where("id=?", id).Updates(&Course{
 		Title:       c.Title,
 		Description: c.Description,
 		Content:     c.Content,

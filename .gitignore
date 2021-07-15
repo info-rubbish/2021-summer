@@ -10,8 +10,8 @@ node_modules
 test
 
 # database
-*.db
-db
+# *.db
+# db
 
 # bin
 bin

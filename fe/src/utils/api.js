@@ -58,7 +58,7 @@ export default {
                 refleshAPI('')
             }
         },
-        setSelf(state, payload) {
+        setUser(state, payload) {
             state.user = payload
             localStorage.setItem('user', JSON.stringify(payload))
         },
@@ -80,6 +80,37 @@ export default {
         },
     },
     actions: {
+        /**
+         * 
+         */
+        async CoursesNew(context,payload){
+            try {
+                const resp = await send.get('/courses/new',{
+                    params:{
+                        offset:payload[0],
+                        order:payload[1]
+                    }
+                })
+                if (resp.data.error) {
+                    context.commit('addAlert', [
+                        2,
+                        '查詢失敗',
+                        resp.data.message,
+                    ])
+                    return null
+                }
+                return resp.data.data.courses
+            } catch (error) {
+                context.commit('addAlert', [
+                    2,
+                    '查詢失敗',
+                    error.response.data.message,
+                ])
+                return null
+            }
+
+        },
+
         /**
          *  id,offset,order
          */
@@ -271,7 +302,7 @@ export default {
                     ])
                     return false
                 }
-                context.commit('setSelf', resp.data.data.user)
+                context.commit('setUser', resp.data.data.user)
                 context.commit('setToken', resp.data.data.token)
                 context.commit('setLogin', true)
                 return true
@@ -285,29 +316,17 @@ export default {
             }
         },
         /**
-         *
+         * aways true
          * @returns {boolean}
          */
         async Logout(context) {
             try {
                 const resp = await send.delete('/token')
-                if (resp.data.error) {
-                    context.commit('addAlert', [
-                        2,
-                        '登出失敗',
-                        resp.data.message,
-                    ])
-                    return false
-                }
                 context.commit('setLogin', false)
                 return true
             } catch (error) {
-                context.commit('addAlert', [
-                    2,
-                    '登出失敗',
-                    error.response.data.message,
-                ])
-                return false
+                context.commit('setLogin', false)
+                return true
             }
         },
         /**
@@ -373,20 +392,22 @@ export default {
          * @param { string|null } data.password
          * @returns {AxiosResponse<Resp>}
          */
-        async ChangeSelfInfo(context, data) {
+        async ChangeSelfInfo(context, payload) {
             try {
-                const resp = await send.patch('/user', data)
+                const resp = await send.patch('/user', {
+                    name:payload[0],
+                    password:payload[1]
+                })
                 if (resp.data.error) {
                     context.commit('addAlert', [
                         2,
                         '更改帳號資訊失敗',
                         resp.data.message,
                     ])
-                    context.commit('setLogin', false)
                     return false
                 }
-
-                return true
+                
+                return this.dispatch('GetSelfInfo')
             } catch (error) {
                 context.commit('addAlert', [
                     2,
@@ -401,7 +422,7 @@ export default {
          * @property {User} resp.user
          * @returns {AxiosResponse<Resp<resp>>}
          */
-        async GetSelfInfo(state) {
+        async GetSelfInfo(context) {
             try {
                 const resp = await send.get('/user')
                 if (resp.data.error) {
@@ -413,7 +434,10 @@ export default {
                     context.commit('setLogin', false)
                     return false
                 }
+                context.commit('setUser', resp.data.data.user)
+                return true
             } catch (error) {
+                window.e=error
                 context.commit('addAlert', [
                     2,
                     '查詢帳號資訊失敗',

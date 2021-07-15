@@ -42,7 +42,7 @@
                     placeholder="尋找課程"
                 />
             </form>
-            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2 p-2">
+            <li class="hover:bg-blue-500 hover:text-gray-100 transition rounded-xl mx-2 my-2 p-2">
                 <router-link to="/home" class="whitespace-nowrap"
                     >主頁</router-link
                 >
@@ -50,21 +50,21 @@
             <!--
             <li v-on:submit.prevent="logout" class="rounded-xl mx-2 my-2">
                 <input
-                    class="hover:bg-blue-300 whitespace-nowrap"
+                    class="hover:bg-blue-500 whitespace-nowrap"
                     type="submit"
                 />
-            </li>--><!-- <li class="hover:bg-blue-300 rounded-xl mx-2 my-2">
+            </li>--><!-- <li class="hover:bg-blue-500 rounded-xl mx-2 my-2">
                 <router-link to="/regist" class="whitespace-nowrap"
                     >註冊</router-link
                 >
             </li> -->
-            <li class="hover:bg-blue-300 rounded-xl mx-2 my-2 p-2">
-                <router-link to="/article/list" class="whitespace-nowrap"
+            <li class="hover:bg-blue-500 hover:text-gray-100 transition rounded-xl mx-2 my-2 p-2">
+                <router-link :to="login?'/article/list':'/login'" class="whitespace-nowrap"
                     >課程</router-link
                 >
             </li>
             <li
-                class="hover:bg-blue-300 rounded-xl mx-2 my-2 p-2"
+                class="hover:bg-blue-500 hover:text-gray-100 transition rounded-xl mx-2 my-2 p-2"
                 v-show="!CheckTTL"
             >
                 <router-link to="/login" class="whitespace-nowrap"
@@ -72,7 +72,7 @@
                 >
             </li>
             <li
-                class="hover:bg-blue-300 rounded-xl mx-2 my-2 p-2"
+                class="hover:bg-blue-500 hover:text-gray-100 transition rounded-xl mx-2 my-2 p-2"
                 v-show="CheckTTL"
             >
                 <router-link to="/account" class="whitespace-nowrap">
@@ -100,7 +100,7 @@ export default {
     data() {
         return { show: false, accountName: '未登入'  }
     },
-    computed: { ...mapGetters(['CheckTTL']) ,...mapState(['user'])},
+    computed: { ...mapGetters(['CheckTTL']) ,...mapState(['user','login'])},
     components: {
         MenuIcon,
     },

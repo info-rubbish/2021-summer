@@ -1,0 +1,25 @@
+{
+    "name": "OO學習網",
+    "short_name": "OO學習網",
+    "theme_color": "rgba(0,0,0,0.39)",
+    "background_color": "rgba(0,0,0,0.69)",
+    "display": "browser",
+    "start_url": "/home",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "type": "image/svg",
+            "sizes": "128x128"
+        },
+        {
+            "src": "/icon.svg",
+            "type": "image/svg",
+            "sizes": "256x256"
+        },
+        {
+            "src": "/icon.svg",
+            "type": "image/svg",
+            "sizes": "512x512"
+        }
+    ]
+}

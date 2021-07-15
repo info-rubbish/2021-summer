@@ -4,6 +4,8 @@
 
 - [nodejs](https://nodejs.dev/)
 - [yarn](https://yarnpkg.com/lang/en/docs/install/)
+- [如果沒有STL需要這個](chrome://flags/#unsafely-treat-insecure-origin-as-secure)
+
 ## 後端
 
 - [golang](https://golang.org/dl/)
@@ -77,3 +79,6 @@ go run .
 - [Smartmockups](https://smartmockups.com/)
 - [Pixeltrue](https://mockups.pixeltrue.com/)
 - [Mockmagic](https://studio.mockmagic.com/)
+
+## 圖片
+- [Pexels](pexels.com)

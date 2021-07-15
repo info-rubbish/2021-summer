@@ -3,23 +3,17 @@
     "short_name": "OO學習網",
     "theme_color": "rgba(0,0,0,0.39)",
     "background_color": "rgba(0,0,0,0.69)",
-    "display": "browser",
+    "description": "這裡，一個能讓你盡情享受學習的地方",
+    "display": "standalone",
     "start_url": "/home",
+    "orientation": "portrait",
+    "lang": "zh-Hant-TW",
     "icons": [
         {
+            "purpose": "any",
             "src": "/icon.svg",
-            "type": "image/svg",
-            "sizes": "128x128"
-        },
-        {
-            "src": "/icon.svg",
-            "type": "image/svg",
-            "sizes": "256x256"
-        },
-        {
-            "src": "/icon.svg",
-            "type": "image/svg",
-            "sizes": "512x512"
+            "type": "image/svg+xml",
+            "sizes": "48x48 72x72 96x96 128x128 150x150 256x256 512x512 1024x102"
         }
     ]
 }

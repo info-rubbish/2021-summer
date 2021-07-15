@@ -1,7 +1,8 @@
 const config = {
     port: '3000',
     // when any byte of serviceworker.js file changed, changes will tigger onupdatefound event to renew the cache
-    last_edit: '1625837814592', // result form Date.now()
+    last_edit: '1626319901960', // result form Date.now()
+    escape_url: ['bg.mp4'],
 }
 
 self.addEventListener('install', (event) => {
@@ -14,7 +15,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url)
-    if (url.port != config.port)
+    if (config.escape_url.includes(url.pathname.split('/').pop()))
+        event.respondWith(Promise.resolve(fetch(event.request)))
+    else if (url.port != config.port)
         // if not under the port, send directly
         event.respondWith(Promise.resolve(fetch(event.request)))
     else if (url.hostname != 'localhost' && url.protocol == 'http:')

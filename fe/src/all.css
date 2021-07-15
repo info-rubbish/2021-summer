@@ -13,8 +13,11 @@ body,
 * {
     font-family: 'Noto Sans TC', sans-serif;
 }
+
+/* dont touch this it's work */
 @layer base {
     div.md-preview > * {
         font-size: revert;
+        list-style: inside;list-style: inside;
     }
 }

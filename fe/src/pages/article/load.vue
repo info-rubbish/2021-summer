@@ -18,31 +18,38 @@
                             p-2
                             rounded-xl
                             hover:bg-gray-200
-                            flex flex-row 
+                            flex flex-row
                         "
                     >
-                        <span class="hidden" >{{ course.id }}</span>
-                        <span class="w-1/4 break-words my-1">標題：{{ course.title }} </span> 
-                        <span class="w-1/4 break-words my-1">時間：{{
-                            course.created
-                        }}</span>
-                        <span class="w-1/4 break-words my-1">作者：{{ course.author }} </span>
-                        <span class="w-1/4 break-words my-1">簡敘：{{
-                            course.description
-                        }}</span>
+                        <span class="hidden">{{ course.id }}</span>
+                        <span class="w-4/12 break-words my-1 px-2"
+                            >標題：{{ course.title }}
+                        </span>
+                        <span class="w-4/12 break-words my-1 px-2"
+                            >時間：{{ course.created }}</span
+                        >
+                        <span class="w-4/12 break-words my-1 px-2"
+                            >簡敘：{{ course.description }}</span
+                        >
                     </li>
                 </ul>
+                <div class="w-full flex justify-center">
+                    <button class="mx-4" @click="page --"
+                    :disabled="!page">
+                        <ChevronDoubleLeftIcon class="w-6 h-6" /></button
+                    ><button
+                        class="mx-4"
+                        @click="page++"
+                        :disabled="!courses.length"
+                    >
+                        <ChevronDoubleRightIcon class="w-6 h-6" />
+                    </button>
+                </div>
             </div>
-            <div class="ml-12 mr-12 mt-12">
+            <div class="ml-12 mr-12 mt-12 mb-4">
                 <h4
                     @click="show = !show"
-                    class="
-                        text-2xl
-                        bg-gray-300
-                        rounded-xl
-                        pl-2
-                        cursor-pointer
-                    "
+                    class="text-2xl bg-gray-300 rounded-xl pl-2 cursor-pointer"
                 >
                     新增文章
                 </h4>
@@ -86,26 +93,40 @@
 
 <script>
 import Navbar from '@/components/navBar.vue'
-import { mapState, mapGetters} from 'vuex'
+import { mapState, mapGetters } from 'vuex'
+import {
+    ChevronDoubleRightIcon,
+    ChevronDoubleLeftIcon,
+} from '@heroicons/vue/solid'
 export default {
     name: 'Login',
-    components: { Navbar },
+    components: { Navbar, ChevronDoubleRightIcon, ChevronDoubleLeftIcon },
     methods: {
         async CreateNew(e) {
-            var title = e.target[0].value
-            var description = e.target[1].value
-            var res = await this.$store.dispatch('CreateCourse', [
+            const title = e.target[0].value
+            const description = e.target[1].value
+            const resp = await this.$store.dispatch('CreateCourse', [
                 title,
                 description,
-                'edit here'
+                'edit here',
             ])
-            this.$router.push('/article/edit/' + res.id)
+            if (!resp) return
+            this.$router.push('/article/edit/' + resp.id)
         },
         async changeOld(id) {
             // const id=e.target.children[0].innerHTML;
 
             console.log(id)
             this.$router.push('/article/edit/' + id)
+        },
+        async update() {
+            const resp = await this.$store.dispatch('GetSelfCourses', [
+                this.page,
+            ])
+            if (!resp) {
+                return
+            }
+            this.courses = resp
         },
     },
     data: function () {
@@ -121,17 +142,19 @@ export default {
             ],
             ...mapState(['user']),
             show: true,
+            page: 0,
         }
     },
     async mounted() {
         //redirect for permission or ttl flaw
-        const resp=await this.$store.dispatch("GetSelfCourses",[])
-        if (!resp) {
-            return
-        }
-        this.courses=resp
+        this.update()
     },
     computed: { ...mapGetters(['CheckTTL']) },
+    watch:{
+        page(){
+            this.update()
+        }
+    }
 }
 </script>
 

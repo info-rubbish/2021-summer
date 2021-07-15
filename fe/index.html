@@ -2,15 +2,16 @@
 <html lang="en">
     <head>
         <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+        <link rel="manifest" href="manifest.json">
         <meta charset="UTF-8" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/icon.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>O O 學習網</title>
     </head>
     <body class="bg-gray-400">
         <div id="app"></div>
         <script type="module" src="/src/main.js"></script>
-        <!-- <script>
+        <script>
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker
                     .register('/serviceworker.js', { scope: '/' })
@@ -26,6 +27,6 @@
                         console.log('Serviceworker registration failed with ' + error)
                     })
             }
-        </script> -->
+        </script>
     </body>
 </html>
